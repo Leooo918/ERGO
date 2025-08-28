@@ -21,7 +21,7 @@ protected:
 
 public:
 	void StartRoulette(int maxBulletCount);
-	void
+	void EndRoulette();
 	
 protected:
 	int CurrentTurn = 0;

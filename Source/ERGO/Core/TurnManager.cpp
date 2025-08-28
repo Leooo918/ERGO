@@ -14,4 +14,10 @@ void ATurnManager::BeginPlay()
 
 void ATurnManager::StartRoulette(int maxBulletCount)
 {
+	
+}
+
+void ATurnManager::EndRoulette()
+{
+	
 }
