@@ -2,13 +2,14 @@
 
 #pragma once
 
-#include  <stack>
+#include <vector>
 #include "CoreMinimal.h"
+#include "Interactable.h"
 #include "GameFramework/Actor.h"
 #include "RouletteGun.generated.h"
 
 UCLASS()
-class ERGO_API ARouletteGun : public AActor
+class ERGO_API ARouletteGun : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 
@@ -22,19 +23,26 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	bool IsEmpty() { return BulletTypes.empty(); }
-	bool GetCurrentBullet() { return BulletTypes.top(); }
+	bool GetCurrentBullet();
+	void Shoot(class AGameEntity* Target);
+	void SetBullet(int FakeCount, int RealCount);
 
-	void SetBullet(int fakeCount, int realCount);
+	void SetDamage(int Value) { Damage = Value; }
 	void SetBulletCount(int Count) { BulletCount = Count; }
+
+public:
+	bool IsEmpty() { return BulletTypes.empty(); }
+	bool GetBulletType(int Index) { return BulletTypes[Index]; }
 	int GetTotalBulletCount() { return BulletCount; }
 	int GetRemainBulletCount() { return BulletTypes.size(); }
 
 public:
-
+	virtual void OnInteract(AGameEntity* target) override;
+	
 protected:
 	int BulletCount;
-	
+	int Damage = 1;
+
 	//If true real, false fake
-	std::stack<bool> BulletTypes;
+	std::vector<bool> BulletTypes;
 };

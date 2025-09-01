@@ -1,12 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameEntityData.h"
 #include "TurnManager.generated.h"
 
 class AGameEntity;
+class ARouletteGun;
+
+DECLARE_DELEGATE_TwoParams(OnChangeTurn, FGameEntityData, FGameEntityData);
 
 UCLASS()
 class ERGO_API ATurnManager : public AActor
@@ -20,13 +22,20 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	void StartRoulette(int maxBulletCount);
+	void Initialize();
+	void StartRoulette(int MaxBulletCount);
+	void ChangeTurn();
 	void EndRoulette();
+
+public:
+	FGameEntityData GetCurrentEntity() { return EntityArray[CurrentTurn]; }
 	
-protected:
+public:
+	UPROPERTY(BlueprintReadWrite)
+	TArray<FGameEntityData> EntityArray;
+
+	OnChangeTurn ChangeTurnAction;
+
+	protected:
 	int CurrentTurn = 0;
-	UPROPERTY(BlueprintReadWrite)
-	TArray<TObjectPtr<AGameEntity>> EntityArray;
-	UPROPERTY(BlueprintReadWrite)
-	TArray<TObjectPtr<ARouletteGun>> GunArray;
 };

@@ -1,55 +1,70 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Objects/RouletteGun.h"
+#include "Objects/GameEntity.h"
 
-// Sets default values
 ARouletteGun::ARouletteGun()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	BulletCount = 0;
 }
 
-// Called when the game starts or when spawned
 void ARouletteGun::BeginPlay()
 {
 	Super::BeginPlay();
-
-	BulletCount = 0;
 }
 
-// Called every frame
 void ARouletteGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void ARouletteGun::SetBullet(int fakeCount, int realCount)
+bool ARouletteGun::GetCurrentBullet()
 {
-	int remainFake = fakeCount;
-	int remainReal = realCount;
-	
-	for (int i = 0; i < fakeCount + realCount; i++)
+	UE_LOG(LogTemp, Warning, TEXT("The Gun is Empty But You Steel Trying To Get Bullet"));
+	if (IsEmpty())
 	{
-		if (remainFake == 0)
-		{
-			BulletTypes.push(true);
-			remainReal--;
-			continue;
-		}
-		if (remainReal == 0)
-		{
-			BulletTypes.push(false);
-			remainFake--;
-			continue;
-		}
-		
-		bool isReal = FMath::RandBool();
-		
-		BulletTypes.push(isReal);
-		
-		if (isReal) --remainReal;
-		else --remainFake;
+		return false;
 	}
+	bool Bullet = BulletTypes[0];
+	BulletTypes.erase(BulletTypes.begin());
+
+	return Bullet;
+}
+
+void ARouletteGun::Shoot(AGameEntity* Target)
+{
+	Damage = 1;
+}
+
+void ARouletteGun::SetBullet(int FakeCount, int RealCount)
+{
+	int RemainFake = FakeCount;
+	int RemainReal = RealCount;
+
+	for (int i = 0; i < FakeCount + RealCount; i++)
+	{
+		if (RemainFake == 0)
+		{
+			BulletTypes.push_back(true);
+			RemainReal--;
+			continue;
+		}
+		if (RemainReal == 0)
+		{
+			BulletTypes.push_back(false);
+			RemainFake--;
+			continue;
+		}
+
+		bool IsReal = FMath::RandBool();
+
+		BulletTypes.push_back(IsReal);
+
+		if (IsReal) --RemainReal;
+		else --RemainFake;
+	}
+}
+
+void ARouletteGun::OnInteract(AGameEntity* target)
+{
+	UE_LOG(LogTemp, Display, TEXT("MING"));
 }

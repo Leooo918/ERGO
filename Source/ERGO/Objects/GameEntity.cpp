@@ -1,26 +1,11 @@
-#include "Objects/GameItem.h"
 #include "Objects/GameEntity.h"
+#include "Objects/GameItem.h"
+#include "Objects/RouletteGun.h"
 
 AGameEntity::AGameEntity()
 {
  	PrimaryActorTick.bCanEverTick = true;
 	CurrentState = EEntityState::None;
-	Health = 0;
-}
-
-void AGameEntity::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void AGameEntity::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-void AGameEntity::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
 void AGameEntity::Initialize(ARouletteGun* gun)
@@ -31,11 +16,11 @@ void AGameEntity::Initialize(ARouletteGun* gun)
 void AGameEntity::UseItem(AGameItem* Item)
 {
 	Item->UseItem(this);
-	OwnedItems.Remove(Item);
 }
 
 void AGameEntity::Attack(AGameEntity* target)
 {
-	target->GetAttacked();
+	RouletteGun->Shoot(target);
+	//뭐 턴 넘기기 그런거 해줘야 하면;;;
 }
 

@@ -10,9 +10,16 @@ class ARouletteGun;
 UENUM(Blueprintable)
 enum class EEntityState : uint8
 {
+	// 자신의 차례가 아닌
 	None = 0,
-	SelectItem = 1,
-	Attack = 2,
+	// 총알 정하는 상태
+	SetBullet = 1,
+	// 아이템 사용할 수 있는 상태
+	UsingItem = 2,
+	// 발사를 할 수 있는 상태
+	Shoot = 3,
+	// 다른 행동 중 이어서 다른 상호작용 불가
+	TakeAction = 4
 };
 
 
@@ -24,17 +31,10 @@ class ERGO_API AGameEntity : public APawn
 public:
 	AGameEntity();
 
-protected:
-	virtual void BeginPlay() override;
-
-public:
-	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 public:
 	virtual void SetEntityState(EEntityState newState) { CurrentState = newState; }
-	virtual void GetItem(AGameItem* Item) { if (Item) OwnedItems.Add(Item); }
-	virtual void GetAttacked() { Health--; }
+	virtual ARouletteGun* GetGun() { return RouletteGun; }
+
 	virtual void Initialize(ARouletteGun* gun);
 
 protected:
@@ -42,9 +42,7 @@ protected:
 	virtual void Attack(AGameEntity* target);
 
 protected:
-	UPROPERTY() 
-	TArray<TObjectPtr<AGameItem>> OwnedItems;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<ARouletteGun> RouletteGun;
 	EEntityState CurrentState;
-	int Health;
 };

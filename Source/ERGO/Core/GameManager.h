@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameEntityData.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameManager.generated.h"
 
@@ -15,5 +16,12 @@ class ERGO_API AGameManager : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	TObjectPtr<class ATurnManager> TurnManager;
+	AGameManager();
+	virtual void BeginPlay() override;
+	
+public:
+	int EntityOriginHealth;
+	int OriginMinRealBulletCount;
+	TObjectPtr<class ATurnManager> CurrentTurnManager;
+	TArray<FGameEntityData> EntityArray;
 };
