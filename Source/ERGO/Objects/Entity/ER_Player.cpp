@@ -3,6 +3,7 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Core/TurnManager.h"
 
 AER_Player::AER_Player()
 {
@@ -46,6 +47,8 @@ void AER_Player::BeginPlay()
 
 		EnableInput(PlayerController);
 	}
+
+	GetGameInstance()->GetSubsystem<UTurnManager>()->AssignEntity(this, 0);
 }
 
 

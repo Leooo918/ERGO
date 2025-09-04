@@ -17,11 +17,4 @@ class ERGO_API AGameManager : public AGameModeBase
 
 public:
 	AGameManager();
-	virtual void BeginPlay() override;
-	
-public:
-	int EntityOriginHealth;
-	int OriginMinRealBulletCount;
-	TObjectPtr<class ATurnManager> CurrentTurnManager;
-	TArray<FGameEntityData> EntityArray;
 };

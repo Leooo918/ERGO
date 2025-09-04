@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "Interactable.generated.h"
 
+DECLARE_DELEGATE(InteractAction);
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UInteractable : public UInterface
@@ -20,4 +22,7 @@ class ERGO_API IInteractable
 public:
 	UFUNCTION()
 	virtual void OnInteract(class AGameEntity* target) = 0;
+
+public:
+	InteractAction InteractAction;
 };
