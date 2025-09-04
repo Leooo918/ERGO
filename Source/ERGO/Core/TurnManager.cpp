@@ -1,32 +1,36 @@
 #include "TurnManager.h"
 
 #include "GameEntityData.h"
+#include "SWarningOrErrorBox.h"
 #include "Objects/GameEntity.h"
 #include "Objects/RouletteGun.h"
 
-ATurnManager::ATurnManager()
+UTurnManager::UTurnManager()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	EntityDataArray.Init(FGameEntityData(), 2);
 }
 
-void ATurnManager::BeginPlay()
+// 게임의 사이클 시작하는
+void UTurnManager::StartGame()
 {
-	Super::BeginPlay();
+	//BulletInserter를 활성화 시켜주어야 함
+	for (auto Entity : EntityDataArray)
+	{
+		//엔티티 전부 총알 장전 상태
+		Entity.Entity->SetEntityState(EEntityState::SetBullet);
+	}
 }
 
-void ATurnManager::Initialize()
-{
-}
 
-void ATurnManager::StartRoulette(int MaxBulletCount)
+void UTurnManager::StartRoulette(int MaxBulletCount, int RealBulletCount)
 {
-	if (EntityArray.IsEmpty())
+	if (EntityDataArray.IsEmpty())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("EntityArray Is Empty"));
 		return;
 	}
 
-	for (auto& Entity : EntityArray)
+	for (auto& Entity : EntityDataArray)
 	{
 		auto* Gun = Entity.Entity->GetGun();
 		Gun->SetBulletCount(MaxBulletCount);
@@ -37,24 +41,53 @@ void ATurnManager::StartRoulette(int MaxBulletCount)
 	}
 
 	//순서 정하는 방식은 나중에 정하기
-	EntityArray[0].Entity->SetEntityState(EEntityState::SetBullet);
+	EntityDataArray[0].Entity->SetEntityState(EEntityState::SetBullet);
 }
 
-void ATurnManager::ChangeTurn()
+void UTurnManager::EndRoulette()
+{
+	
+}
+
+void UTurnManager::ChangeTurn()
 {
 	// 원래 턴 이었던 애는 턴을 넘기고 다음 애 턴으로 넘기기
-	FGameEntityData Prev = EntityArray[CurrentTurn];
+	FGameEntityData Prev = EntityDataArray[CurrentTurn];
 	Prev.Entity->SetEntityState(EEntityState::None);
 	
-	if (++CurrentTurn >= EntityArray.Num())
+	if (++CurrentTurn >= EntityDataArray.Num())
 		CurrentTurn = 0;
 	
-	FGameEntityData Current = EntityArray[CurrentTurn];
+	FGameEntityData Current = EntityDataArray[CurrentTurn];
 	Current.Entity->SetEntityState(EEntityState::UsingItem);
 
 	ChangeTurnAction.ExecuteIfBound(Prev, Current);
 }
 
-void ATurnManager::EndRoulette()
+//0 = Player, 1 = AI
+void UTurnManager::AssignEntity(AGameEntity* Entity, int index)
 {
+	if (index < 0 || index >= EntityDataArray.Num())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid index"));
+		return;
+	}
+
+	EntityDataArray[index].Entity = Entity;
+	EntityDataArray[index].RemainHealth = 5;
+	EntityDataArray[index].MinRealBullet = 1;
+}
+
+FGameEntityData UTurnManager::GetEntityData(class AGameEntity* Entity)
+{
+	for (auto EntityData : EntityDataArray)
+	{
+		if (EntityData.Entity == Entity)
+		{
+			return EntityData;
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("TurnManager.GetEntityData() Entity is wrong"));
+	return FGameEntityData();
 }

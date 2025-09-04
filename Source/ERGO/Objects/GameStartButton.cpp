@@ -1,6 +1,7 @@
 #include "Objects/GameStartButton.h"
 #include "Core/GameManager.h"
 #include "GameEntity.h"
+#include "Core/TurnManager.h"
 
 AGameStartButton::AGameStartButton()
 {
@@ -23,6 +24,5 @@ void AGameStartButton::Tick(float DeltaTime)
 void AGameStartButton::OnInteract(AGameEntity* target)
 {
 	//게임 시작
-	AGameManager* GameManager = Cast<AGameManager>(GetWorld()->GetAuthGameMode());
-	
+	GetGameInstance()->GetSubsystem<UTurnManager>()->StartGame();
 }

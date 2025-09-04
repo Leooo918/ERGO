@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameEntityData.h"
+#include "Subsystems/GameInstanceSubsystem.h"
 #include "TurnManager.generated.h"
 
 class AGameEntity;
@@ -11,29 +12,27 @@ class ARouletteGun;
 DECLARE_DELEGATE_TwoParams(OnChangeTurn, FGameEntityData, FGameEntityData);
 
 UCLASS()
-class ERGO_API ATurnManager : public AActor
+class ERGO_API UTurnManager : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
 public:
-	ATurnManager();
-
-protected:
-	virtual void BeginPlay() override;
+	UTurnManager();
 
 public:
-	void Initialize();
-	void StartRoulette(int MaxBulletCount);
-	void ChangeTurn();
+	void StartGame();
+	void StartRoulette(int MaxBulletCount, int RealBulletCount);
 	void EndRoulette();
+	void ChangeTurn();
+	void AssignEntity(AGameEntity* Entity, int  index);
 
 public:
-	FGameEntityData GetCurrentEntity() { return EntityArray[CurrentTurn]; }
+	FGameEntityData GetCurrentEntity() { return EntityDataArray[CurrentTurn]; }
+	FGameEntityData GetEntityData(AGameEntity* Entity);
 	
 public:
 	UPROPERTY(BlueprintReadWrite)
-	TArray<FGameEntityData> EntityArray;
-
+	TArray<FGameEntityData> EntityDataArray;
 	OnChangeTurn ChangeTurnAction;
 
 	protected:
