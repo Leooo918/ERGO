@@ -8,6 +8,11 @@ AGameEntity::AGameEntity()
 	CurrentState = EEntityState::None;
 }
 
+void AGameEntity::StartReloadingGun()
+{
+	
+}
+
 void AGameEntity::Initialize(ARouletteGun* gun)
 {
 	RouletteGun = gun;

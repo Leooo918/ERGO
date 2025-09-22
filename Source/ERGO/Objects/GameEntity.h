@@ -32,6 +32,7 @@ public:
 	AGameEntity();
 
 public:
+	virtual void StartReloadingGun();
 	virtual void SetEntityState(EEntityState newState) { CurrentState = newState; }
 	virtual ARouletteGun* GetGun() { return RouletteGun; }
 

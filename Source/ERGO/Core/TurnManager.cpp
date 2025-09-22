@@ -1,9 +1,9 @@
 #include "TurnManager.h"
 
 #include "GameEntityData.h"
-#include "SWarningOrErrorBox.h"
 #include "Objects/GameEntity.h"
 #include "Objects/RouletteGun.h"
+
 
 UTurnManager::UTurnManager()
 {
@@ -13,12 +13,12 @@ UTurnManager::UTurnManager()
 // 게임의 사이클 시작하는
 void UTurnManager::StartGame()
 {
-	//BulletInserter를 활성화 시켜주어야 함
-	for (auto Entity : EntityDataArray)
-	{
-		//엔티티 전부 총알 장전 상태
-		Entity.Entity->SetEntityState(EEntityState::SetBullet);
-	}
+	//게임이 준비되어야만 시작
+	if (IsGameReady == false) return;
+
+	//우선 총 장전이 가능한 상태로 만들어
+	EntityDataArray[0].Entity->SetEntityState(EEntityState::SetBullet);
+	EntityDataArray[1].Entity->SetEntityState(EEntityState::SetBullet);
 }
 
 
@@ -65,18 +65,20 @@ void UTurnManager::ChangeTurn()
 }
 
 //0 = Player, 1 = AI
-void UTurnManager::AssignEntity(AGameEntity* Entity, int index)
+void UTurnManager::AssignEntity(AGameEntity* Entity, EEntityType entityType)
 {
-	if (index < 0 || index >= EntityDataArray.Num())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Invalid index"));
-		return;
-	}
+	EntityDataArray[entityType].Entity = Entity;
+	EntityDataArray[entityType].RemainHealth = 5;
+	EntityDataArray[entityType].MinRealBullet = 1;
 
-	EntityDataArray[index].Entity = Entity;
-	EntityDataArray[index].RemainHealth = 5;
-	EntityDataArray[index].MinRealBullet = 1;
+	//0, 1 전부 할당될 시 게임 시작 가능
+	if (EntityDataArray[0].Entity != nullptr && EntityDataArray[1].Entity != nullptr)
+	{
+		IsGameReady = true;
+	}
 }
+
+
 
 FGameEntityData UTurnManager::GetEntityData(class AGameEntity* Entity)
 {

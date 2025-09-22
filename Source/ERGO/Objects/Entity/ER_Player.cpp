@@ -48,7 +48,7 @@ void AER_Player::BeginPlay()
 		EnableInput(PlayerController);
 	}
 
-	GetGameInstance()->GetSubsystem<UTurnManager>()->AssignEntity(this, 0);
+	GetGameInstance()->GetSubsystem<UTurnManager>()->AssignEntity(this, EEntityType::Player);
 }
 
 

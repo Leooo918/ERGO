@@ -9,6 +9,12 @@
 class AGameEntity;
 class ARouletteGun;
 
+enum  EEntityType
+{
+	Player = 0,
+	Enemy = 1,
+};
+
 DECLARE_DELEGATE_TwoParams(OnChangeTurn, FGameEntityData, FGameEntityData);
 
 UCLASS()
@@ -24,7 +30,7 @@ public:
 	void StartRoulette(int MaxBulletCount, int RealBulletCount);
 	void EndRoulette();
 	void ChangeTurn();
-	void AssignEntity(AGameEntity* Entity, int  index);
+	void AssignEntity(AGameEntity* Entity, EEntityType  index);
 
 public:
 	FGameEntityData GetCurrentEntity() { return EntityDataArray[CurrentTurn]; }
@@ -37,4 +43,5 @@ public:
 
 	protected:
 	int CurrentTurn = 0;
+	bool IsGameReady = false;
 };
